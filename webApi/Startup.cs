@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using application.Core;
 using application.Orders;
 using Autofac;
 using MediatR;
@@ -73,6 +74,8 @@ namespace webApi
 				var c = ctx.Resolve<IComponentContext>();
 				return t => c.Resolve(t);
 			});
+
+			//builder.RegisterType<DomainEventDispatcher>().As<IDomainEventDispatcher>();
 		}
 	}
 }
