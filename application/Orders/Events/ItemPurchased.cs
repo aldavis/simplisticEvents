@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using application.Core;
+using application.Products;
+using MediatR;
 
 namespace application.Orders.Events
 {
@@ -13,9 +15,22 @@ namespace application.Orders.Events
 
 	public class ItemPurchasedHandler : IDomainEventHandler<ItemPurchased>
 	{
-		//test DI with these handlers
+		readonly IMediator _mediator;
+
+		public ItemPurchasedHandler(IMediator mediator)
+		{
+			_mediator = mediator;
+		}
 		public Task Handle(ItemPurchased domainEvent)
 		{
+			var stock = new Stock()
+			{
+				ProductId = domainEvent.ProductId,
+				QuantityAvailable = domainEvent.Quantity
+			};
+
+			stock.Handle(domainEvent);
+
 			return Task.CompletedTask;
 		}
 	}
