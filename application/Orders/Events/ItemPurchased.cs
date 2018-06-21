@@ -15,12 +15,6 @@ namespace application.Orders.Events
 
 	public class ItemPurchasedHandler : IDomainEventHandler<ItemPurchased>
 	{
-		readonly IMediator _mediator;
-
-		public ItemPurchasedHandler(IMediator mediator)
-		{
-			_mediator = mediator;
-		}
 		public Task Handle(ItemPurchased domainEvent)
 		{
 			var stock = new Stock()

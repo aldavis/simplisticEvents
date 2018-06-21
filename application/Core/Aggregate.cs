@@ -53,7 +53,7 @@ namespace application
 		    _inbox.Add(domainEvent);
 	    }
 
-	    public void ProcessDomainEvent(IDomainEvent domainEvent)
+	    public void ClearEvent(IDomainEvent domainEvent)
 	    {
 		    _outbox?.Remove(domainEvent);
 	    }

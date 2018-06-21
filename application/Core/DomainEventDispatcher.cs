@@ -30,7 +30,7 @@ namespace application.Core
 
 					await handler.Handle(domainEvent, _serviceFactory);
 
-					aggregate.ProcessDomainEvent(domainEvent);
+					aggregate.ClearEvent(domainEvent);
 
 				}
 				catch (Exception ex)
