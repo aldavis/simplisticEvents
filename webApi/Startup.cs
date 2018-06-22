@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.Swagger;
 using webApi.Filters;
 
 namespace webApi
@@ -27,6 +28,18 @@ namespace webApi
 	            options.Filters.Add(new RequestValidationFilter());
             });
 
+	        services.AddSwaggerGen(c =>
+	        {
+		        c.SwaggerDoc("v1", new Info { Title = "Docster API", Version = "v1" });
+		        //c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+		        //{
+			       // In = "header",
+			       // Description = "Please insert JWT with Bearer into field",
+			       // Name = "Authorization",
+			       // Type = "apiKey"
+		        //});
+	        });
+
 		}
 
 	    public void ConfigureContainer(ContainerBuilder builder)
@@ -42,7 +55,13 @@ namespace webApi
             }
 
             app.UseMvc();
-        }
+	        app.UseSwagger();
+	        app.UseSwaggerUI(c =>
+	        {
+		        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Playground");
+
+	        });
+		}
     }
 
 	public class AutofacModule : Autofac.Module
@@ -78,7 +97,6 @@ namespace webApi
 				return t => c.Resolve(t);
 			});
 
-			//builder.RegisterType<DomainEventDispatcher>().As<IDomainEventDispatcher>();
 		}
 	}
 }
