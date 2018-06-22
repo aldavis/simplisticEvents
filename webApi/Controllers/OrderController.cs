@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using application.Orders;
 using MediatR;
@@ -19,10 +17,11 @@ namespace webApi.Controllers
 	    }
 
 
+		//TODO figure out why the route wont hit when i change it to just /approve
 	    [HttpPost("{id}/approve", Name = "approve3")]
-	    public async Task<IActionResult> Approve3(Guid id,CancellationToken token)
+	    public async Task<IActionResult> Approve3([FromBody]ApproveOrderRequest request,CancellationToken token)
 	    {
-		    var result = await _mediator.Send(new ApproveOrderRequest(id), token);
+		    var result = await _mediator.Send(request, token);
 
 		    return Ok(result);
 	    }

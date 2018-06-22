@@ -2,9 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using application.Core;
-using application.Orders.Events;
 using MediatR;
 using MediatR.Pipeline;
+using System.ComponentModel.DataAnnotations;
 
 namespace application.Orders
 {
@@ -15,7 +15,9 @@ namespace application.Orders
 		    Id = id;
 	    }
 
+		[Required]
 		public Guid Id { get; }
+
     }
 
 		public class ApproveOrderResponse

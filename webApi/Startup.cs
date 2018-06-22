@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using application.Core;
 using application.Orders;
 using Autofac;
 using MediatR;
@@ -8,6 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using webApi.Filters;
 
 namespace webApi
 {
@@ -22,7 +22,10 @@ namespace webApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+	            options.Filters.Add(new RequestValidationFilter());
+            });
 
 		}
 
