@@ -17,9 +17,8 @@ namespace webApi.Controllers
 	    }
 
 
-		//TODO figure out why the route wont hit when i change it to just /approve
-	    [HttpPost("{id}/approve", Name = "approve3")]
-	    public async Task<IActionResult> Approve3([FromBody]ApproveOrderRequest request,CancellationToken token)
+	    [HttpPost("/approve", Name = "approve")]
+	    public async Task<IActionResult> Approve([FromBody]ApproveOrderRequest request,CancellationToken token)
 	    {
 		    var result = await _mediator.Send(request, token);
 

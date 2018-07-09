@@ -54,7 +54,9 @@ namespace webApi
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc();
+	        //app.UseMiddleware(typeof(ErrorHandlingMiddleware));
+
+			app.UseMvc();
 	        app.UseSwagger();
 	        app.UseSwaggerUI(c =>
 	        {
