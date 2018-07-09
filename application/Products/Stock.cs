@@ -1,4 +1,5 @@
 ﻿using application.Orders.Events;
+using application.Products.Events;
 
 namespace application.Products
 {
@@ -13,6 +14,14 @@ namespace application.Products
 		    Process(domainEvent, e =>
 		    {
 			    QuantityAvailable -= e.Quantity;
+		    });
+	    }
+
+	    public void Handle(InventoryReceived domainEvent)
+	    {
+		    Process(domainEvent, e =>
+		    {
+			    QuantityAvailable += e.Quantity;
 		    });
 	    }
 	}
