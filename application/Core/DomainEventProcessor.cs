@@ -5,22 +5,22 @@ using MediatR;
 
 namespace application.Core
 {
-	public interface IDomainEventDispatcher
+	public interface IDomainEventProcessor
 	{
-		Task<Exception> Dispatch(Aggregate aggregate);
+		Task<Exception> ProcessEvents(Aggregate aggregate);
 	}
 
-    public class DomainEventDispatcher:IDomainEventDispatcher
-    {
+    public class DomainEventProcessor: IDomainEventProcessor
+	{
 	    readonly ServiceFactory _serviceFactory;
 
-	    public DomainEventDispatcher(ServiceFactory serviceFactory)
+	    public DomainEventProcessor(ServiceFactory serviceFactory)
 	    {
 		    _serviceFactory = serviceFactory;
 	    }
 
 
-		public async Task<Exception> Dispatch(Aggregate aggregate)
+		public async Task<Exception> ProcessEvents(Aggregate aggregate)
 	    {
 		    foreach (var domainEvent in aggregate.Outbox.ToArray())
 			{
@@ -42,18 +42,18 @@ namespace application.Core
 		    return null;
 	    }
 
-	    static DomainEventDispatcherHandler GetHandler(IDomainEvent domainEvent)
+	    static DomainEventHandler GetHandler(IDomainEvent domainEvent)
 	    {
-		    return (DomainEventDispatcherHandler)
-			    Activator.CreateInstance(typeof(DomainEventDispatcherHandler<>).MakeGenericType(domainEvent.GetType()));
+		    return (DomainEventHandler)
+			    Activator.CreateInstance(typeof(DomainEventHandler<>).MakeGenericType(domainEvent.GetType()));
 	    }
 
-	    abstract class DomainEventDispatcherHandler
+	    abstract class DomainEventHandler
 	    {
 		    public abstract Task Handle(IDomainEvent domainEvent, ServiceFactory factory);
 	    }
 
-	    class DomainEventDispatcherHandler<T> : DomainEventDispatcherHandler
+	    class DomainEventHandler<T> : DomainEventHandler
 		    where T : IDomainEvent
 	    {
 		    public override Task Handle(IDomainEvent domainEvent, ServiceFactory factory)

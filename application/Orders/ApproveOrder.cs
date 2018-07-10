@@ -55,16 +55,16 @@ namespace application.Orders
 
 	public class ApproveOrderPostProcessor : IRequestPostProcessor<ApproveOrderRequest, ApproveOrderResponse>
 	{
-		readonly IDomainEventDispatcher _eventDispatcher;
+		readonly IDomainEventProcessor _eventProcessor;
 
-		public ApproveOrderPostProcessor(IDomainEventDispatcher eventDispatcher)
+		public ApproveOrderPostProcessor(IDomainEventProcessor eventProcessor)
 		{
-			_eventDispatcher = eventDispatcher;
+			_eventProcessor = eventProcessor;
 		}
 
 		public Task Process(ApproveOrderRequest request, ApproveOrderResponse response)
 		{
-			_eventDispatcher.Dispatch(response.Order);
+			_eventProcessor.ProcessEvents(response.Order);
 			
 			return Task.FromResult(response);
 		}

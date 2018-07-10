@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 using application.Core;
-using application.Orders;
 using MediatR;
 using MediatR.Pipeline;
 
@@ -22,14 +19,14 @@ namespace application.Products
 
     public class ReceiveInventoryRequest: IRequest<ReceiveInventoryResponse>
     {
-	    public ReceiveInventoryRequest(Guid productId,int quantity)
+	    public ReceiveInventoryRequest(int productId,int quantity)
 	    {
 		    ProductId = productId;
 		    Quantity = quantity;
 	    }
 
 		[Required]
-		public Guid ProductId { get; }
+		public int ProductId { get; }
 
 		[Required]
 		public int Quantity { get; }
@@ -38,12 +35,12 @@ namespace application.Products
 
 		public class ReceiveInventoryResponse
 		{
-			public ReceiveInventoryResponse(IList<Stock> stock)
+			public ReceiveInventoryResponse(Stock stock)
 			{
 				Stock = stock;
 			}
 
-			public IList<Stock> Stock { get; }
+			public Stock Stock { get; }
 		}
 
 
@@ -59,10 +56,14 @@ namespace application.Products
 	{
 		public Task<ReceiveInventoryResponse> Handle(ReceiveInventoryRequest request, CancellationToken cancellationToken)
 		{
-			var order = new Order();
-			order.Items.Add(new OrderItem{ListPrice = 5,ProductId = 3,ProductName = "crackers",Quantity = 45});
+			//this would be pulled from data store
+			var item = new Item { ProductId = request.ProductId };
 
-			order.Approve();
+			item.AddToInventory(request.Quantity);
+
+			//check for orders waiting on item, fill if found
+
+			//recheck inventory levels, send additional request for more inventory if needed
 
 			return Task.FromResult(new ReceiveInventoryResponse(null));
 		}
@@ -71,16 +72,16 @@ namespace application.Products
 
 	public class ReceiveInventoryPostProcessor : IRequestPostProcessor<ReceiveInventoryRequest, ReceiveInventoryResponse>
 	{
-		readonly IDomainEventDispatcher _eventDispatcher;
+		readonly IDomainEventProcessor _eventProcessor;
 
-		public ReceiveInventoryPostProcessor(IDomainEventDispatcher eventDispatcher)
+		public ReceiveInventoryPostProcessor(IDomainEventProcessor eventProcessor)
 		{
-			_eventDispatcher = eventDispatcher;
+			_eventProcessor = eventProcessor;
 		}
 
 		public Task Process(ReceiveInventoryRequest request, ReceiveInventoryResponse response)
 		{
-			//_eventDispatcher.Dispatch(response.Order);
+			_eventProcessor.ProcessEvents(response.Stock);
 			
 			return Task.FromResult(response);
 		}
